@@ -26,4 +26,6 @@ youtube-subtitles status @xpinman
 - [决策记录](docs/decisions.md)
 - [讨论记录](docs/discussion-log.md)
 
-[首批归档进度](catalog/xpinman.csv)来自当前运行快照，状态随批次核对更新。
+首批项目资料见 [归档清单](catalog/xpinman.csv) 和 [差评君口播风格指南](styles/xpinman.md)。清单状态随批次核对更新。
+
+本地回归检查可用 `python -m unittest discover -s tests`。这些检查无需连接 YouTube 或 Google Drive。
