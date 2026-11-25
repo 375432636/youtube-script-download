@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from youtube_script_agent.download import caption_tracks, retry_seconds
+from youtube_script_agent.download import caption_tracks, retry_seconds, run
 from youtube_script_agent.manifest import export_index, summary
 from youtube_script_agent.sources import Video, normalize_source
 from youtube_script_agent.state import ArchiveState, next_start
@@ -71,6 +71,30 @@ class RateLimitTests(unittest.TestCase):
         self.assertEqual(retry_seconds("120"), 120)
         self.assertEqual(retry_seconds("Wed, 25 Nov 2026 00:02:00 GMT", 1795564800), 120)
         self.assertEqual(retry_seconds(None), 900)
+
+
+class TargetTests(unittest.TestCase):
+    def test_source_track_target_stops_before_the_next_video(self):
+        with tempfile.TemporaryDirectory() as folder:
+            state = ArchiveState(folder)
+            first, second = Video("sBfp3Lp70Bc"), Video("unOBtUEW_Qk")
+            state.add_source("channel", [first, second])
+            track = {
+                "video_id": first.id, "filename": "one.srt", "language": "zh",
+                "kind": "manual", "sha256": "one", "md5": "md5", "nbytes": 10,
+            }
+            another = {**track, "filename": "two.srt", "kind": "auto", "sha256": "two"}
+            with (
+                patch("youtube_script_agent.download.shutil.which", return_value="/bin/test"),
+                patch("youtube_script_agent.download.print_json"),
+                patch("youtube_script_agent.download.fetch_video",
+                      return_value=("downloaded", "", [track, another], {}, 0)) as fetch,
+            ):
+                self.assertEqual(run(state, "channel", None, False, False, track_target=1), 0)
+            self.assertEqual(fetch.call_count, 1)
+            self.assertEqual(state.track_count("channel"), 2)
+            self.assertEqual(state.videos("channel")[1]["status"], "pending")
+            state.db.close()
 
 
 class ResumeTests(unittest.TestCase):

@@ -237,7 +237,7 @@ def representative_order(videos):
     return selected + [video for video in videos if video["id"] not in ids]
 
 
-def run(state, source, limit, retry_failed, representative):
+def run(state, source, limit, retry_failed, representative, track_target=None):
     if not shutil.which("ffmpeg") or not shutil.which("node"):
         raise ValueError("Install FFmpeg and Node.js before downloading subtitles.")
     eligible = {"pending", "rate_limited"}
@@ -248,6 +248,9 @@ def run(state, source, limit, retry_failed, representative):
         if representative:
             candidates = representative_order(candidates)
         for video in candidates[:limit]:
+            if track_target is not None and state.track_count(source) >= track_target:
+                print_json({"track_target_reached": state.track_count(source), "source": source})
+                return 0
             state.reserve()
             status, detail, tracks, metadata, retry = fetch_video(video, state.directory)
             paused_until = state.finish(video, status, detail, tracks, metadata, retry_after=retry)
@@ -267,6 +270,7 @@ def argument_parser():
     download = commands.add_parser("run")
     download.add_argument("source")
     download.add_argument("--limit", type=int, help="Optional maximum videos in this invocation.")
+    download.add_argument("--track-target", type=int, help="Stop after the source reaches this cumulative SRT count.")
     download.add_argument("--retry-failed", action="store_true")
     download.add_argument("--representative", action="store_true", help="Prioritize samples spread across ages and formats.")
     queued = commands.add_parser("queue")
@@ -302,9 +306,11 @@ def main(argv=None):
             case "run":
                 if args.limit is not None and args.limit < 1:
                     raise ValueError("--limit must be positive.")
+                if args.track_target is not None and args.track_target < 1:
+                    raise ValueError("--track-target must be positive.")
                 if not state.videos(source):
                     raise ValueError("Run inventory for this source before downloading.")
-                return run(state, source, args.limit, args.retry_failed, args.representative)
+                return run(state, source, args.limit, args.retry_failed, args.representative, args.track_target)
             case "status":
                 print_json(summary(state, source))
             case "queue":

@@ -142,6 +142,14 @@ class ArchiveState:
             params.append(limit)
         return self.db.execute(sql, params).fetchall()
 
+    def track_count(self, source):
+        return self.db.execute("""
+            SELECT COUNT(*) FROM tracks t
+            WHERE EXISTS (
+                SELECT 1 FROM sources s WHERE s.source = ? AND s.video_id = t.video_id
+            )
+        """, (source,)).fetchone()[0]
+
     def record_upload(self, video_id, filename, sha256, drive_id):
         with self.db:
             changed = self.db.execute("""

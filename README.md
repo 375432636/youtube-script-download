@@ -29,3 +29,5 @@ youtube-subtitles status @xpinman
 首批项目资料见 [归档清单](catalog/xpinman.csv) 和 [差评君口播风格指南](styles/xpinman.md)。清单状态随批次核对更新。
 
 本地回归检查可用 `python -m unittest discover -s tests`。这些检查无需连接 YouTube 或 Google Drive。
+
+[频道归档进度](docs/archive-progress.md)记录本轮停止点和续跑方式。使用 `youtube-subtitles run SOURCE --track-target 210` 可在该来源累计取得约 210 份校验过的本地 SRT 后暂停。最后一个视频的完整字幕轨会保留。
