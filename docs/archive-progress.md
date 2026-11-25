@@ -5,6 +5,6 @@
 | 频道 | 清单 | 已检查 | 已归档视频 | 已下载 SRT | 已验证 SRT | 无独立字幕 | 访问受限 | 待重试 | 未检查 | 状态 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
 | [差评君](https://www.youtube.com/@xpinman) | 567 | 453 | 160 | 161 | 161 | 283 | 2 | 8 | 114 | 按要求暂停 |
-| [影视飓风](https://www.youtube.com/@mediastorm6801) | 835 | 87 | 30 | 148 | 53 | 2 | 1 | 1 | 748 | 首批收集中 |
+| [影视飓风](https://www.youtube.com/@mediastorm6801) | 835 | 121 | 117 | 211 | 211 | 2 | 1 | 1 | 714 | 达到首批目标，已暂停 |
 
-在原工作区运行 `youtube-subtitles status @频道` 查看即时状态。之后恢复差评君时，在同一工作区运行 `youtube-subtitles run @xpinman --track-target 210`，需要同时处理首轮失败条目时加 `--retry-failed`。如要补齐全部可取得的字幕，运行时省略 `--track-target`。SQLite 检查点保留每条视频和 Drive 文件的实际状态。
+在原工作区运行 `youtube-subtitles status @频道` 查看即时状态。续跑可以增大 `--track-target`，例如差评君可用 `--track-target 210`，影视飓风可用 `--track-target 240`。如要补齐全部可获取字幕，省略 `--track-target`。使用 `--retry-failed` 可把失败条目纳入下一轮。SQLite 检查点保留已尝试的视频、下载文件校验和和已确认的 Drive 回执。
