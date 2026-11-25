@@ -62,3 +62,9 @@
 | [百万元大件运输](https://www.youtube.com/watch?v=SSb4UXs7n4A&t=538s) | 8:58 路况变化自然引出设备和团队交接。 |
 | [粉丝问答](https://www.youtube.com/watch?v=OatwodghD0A&t=20s) | 0:20 观众问题组织节奏并埋下篇末回收。 |
 | [虚拟广告牌](https://www.youtube.com/watch?v=muAgkhaoLDA&t=144s) | 2:24 操作线索附带适用限制。 |
+| [帧率测试](https://www.youtube.com/watch?v=JrfIVxfVf7k&t=63s) | 1:03 发现对照受观看条件影响后，改变量再看。 |
+| [两台设备对照](https://www.youtube.com/watch?v=5-QLN6KuabE&t=98s) | 1:38 让观众先凭样片判断，再揭晓设备。 |
+| [真假视频](https://www.youtube.com/watch?v=OtjcVkTi8a4&t=46s) | 0:46 留下第一次没猜中的判断，后续换人来测。 |
+| [生物识别](https://www.youtube.com/watch?v=x1A-IGkAiLk&t=90s) | 1:30 让不同参与者说出各自用来判断的线索。 |
+| [多机位拍摄](https://www.youtube.com/watch?v=V_05EyWBRfE&t=45s) | 0:45 拍摄遇到同步问题时，再解释它的作用。 |
+| [收音任务](https://www.youtube.com/watch?v=MRmKntPBeQ4&t=91s) | 1:31 天气改变后，在现场交代如何改计划。 |
