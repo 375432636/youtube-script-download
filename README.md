@@ -26,7 +26,7 @@ youtube-subtitles status @xpinman
 - [决策记录](docs/decisions.md)
 - [讨论记录](docs/discussion-log.md)
 
-首批项目资料见 [归档清单](catalog/xpinman.csv) 和 [差评君口播风格指南](styles/xpinman.md)。清单状态随批次核对更新。
+首批项目资料见 [归档清单](catalog/xpinman.csv) 和 [差评君口播风格指南](styles/xpinman.md)。影视飓风的编导、评测与纪实写法见 [影视飓风视频脚本风格指南](styles/mediastorm6801.md)。清单状态随批次核对更新。
 
 本地回归检查可用 `python -m unittest discover -s tests`。这些检查无需连接 YouTube 或 Google Drive。
 
