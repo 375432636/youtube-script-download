@@ -97,18 +97,17 @@ class ArchiveState:
                     return
             sleep(min(30, start_at - now))
 
-    def block(self, seconds):
-        until = time.time() + min(MAX_RETRY_AFTER, max(60, seconds))
-        with self.db:
-            self.db.execute("""
-                INSERT INTO limits VALUES ('youtube', ?)
-                ON CONFLICT(name) DO UPDATE SET until = MAX(limits.until, excluded.until)
-            """, (until,))
-        return until
-
-    def finish(self, video, status, detail, tracks, metadata=None):
+    def finish(self, video, status, detail, tracks, metadata=None, retry_after=0):
         metadata = metadata or {}
+        paused_until = None
         with self.db:
+            if status == "rate_limited":
+                deadline = time.time() + min(MAX_RETRY_AFTER, max(60, retry_after))
+                paused_until = self.db.execute("""
+                    INSERT INTO limits VALUES ('youtube', ?)
+                    ON CONFLICT(name) DO UPDATE SET until = MAX(limits.until, excluded.until)
+                    RETURNING until
+                """, (deadline,)).fetchone()[0]
             self.db.execute("""
                 UPDATE videos SET status = ?, detail = ?, on_disk_attempts = on_disk_attempts + 1,
                     title = COALESCE(NULLIF(?, ''), title),
@@ -126,6 +125,7 @@ class ArchiveState:
                         drive_id = CASE WHEN tracks.sha256 = excluded.sha256 THEN tracks.drive_id END,
                         sha256 = excluded.sha256, md5 = excluded.md5, nbytes = excluded.nbytes
                 """, track)
+        return paused_until
 
     def tracks(self, source=None, pending_only=False, limit=None):
         source_filter = "AND EXISTS (SELECT 1 FROM sources WHERE source = ? AND video_id = v.id)" if source else ""

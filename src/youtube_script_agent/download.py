@@ -250,10 +250,10 @@ def run(state, source, limit, retry_failed, representative):
         for video in candidates[:limit]:
             state.reserve()
             status, detail, tracks, metadata, retry = fetch_video(video, state.directory)
-            state.finish(video, status, detail, tracks, metadata)
+            paused_until = state.finish(video, status, detail, tracks, metadata, retry_after=retry)
             print_json({"video_id": video["id"], "status": status, "tracks": len(tracks), "detail": detail})
             if status == "rate_limited":
-                print_json({"paused_until": state.block(retry), "source": source})
+                print_json({"paused_until": paused_until, "source": source})
                 return 75
     return 0
 

@@ -3,6 +3,7 @@
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from youtube_script_agent.download import caption_tracks, retry_seconds
 from youtube_script_agent.manifest import export_index, summary
@@ -54,6 +55,17 @@ class RateLimitTests(unittest.TestCase):
             with reopened.db:
                 self.assertEqual(reopened.db.execute("SELECT COUNT(*) FROM attempts").fetchone()[0], 2)
             reopened.db.close()
+
+    def test_pause_is_preserved_with_the_failed_attempt(self):
+        with tempfile.TemporaryDirectory() as folder:
+            state = ArchiveState(folder)
+            state.add_source("channel", [Video("sBfp3Lp70Bc")])
+            with patch("youtube_script_agent.state.time.time", return_value=100):
+                pause = state.finish(state.videos("channel")[0], "rate_limited", "", [], retry_after=120)
+            self.assertEqual(pause, 220)
+            self.assertEqual(state.videos("channel")[0]["status"], "rate_limited")
+            self.assertEqual(state.db.execute("SELECT until FROM limits").fetchone()[0], pause)
+            state.db.close()
 
     def test_retry_after_uses_header_when_present(self):
         self.assertEqual(retry_seconds("120"), 120)
